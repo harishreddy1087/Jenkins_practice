@@ -1,0 +1,63 @@
+pipeline {
+    agent any 
+
+    environment{
+        AWS_REGION = "us-east-1"
+        ECR_REPO = "203918862728.dkr.ecr.us-east-1.amazonaws.com/hari"
+    }
+
+    stages{
+        stage('build application'){
+            steps{
+                // Build Java application using Maven
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Run test'){
+            steps{
+                sh 'mvn test'
+            }
+        }
+
+        stage('sonar scan'){
+            steps{
+                // Static code analysis for security & code quality
+                sh 'mvn sonar:sonar'
+            }
+        }
+
+        stage('build dockerimage'){
+            steps{
+                sh "docker build -t hari-app ."
+            }
+        }
+
+        stage('Tag docker image'){
+            steps{
+                // Tag image for AWS ECR
+                sh "docker tag hari-app:latest $ECR_REPO:latest"
+            }
+        }
+
+        stage('Login to AWS ECR'){
+            steps{
+                sh'''
+                aws ecr get-login-password \
+                --region $AWS_REGION | \
+                docker login \
+                --username AWS \
+                --password-stdin $ECR_REPO
+                '''
+            }
+        }
+
+        stage('push the image'){
+            steps{
+                sh "docker push $ECR_REPO:latest"
+            }
+        }
+
+
+    }
+}
