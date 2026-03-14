@@ -8,7 +8,7 @@ pipeline{
         }
         stage ('test'){
             steps{
-                echo "test is done"
+                echo "test is done harish"
             }
         }
     }
