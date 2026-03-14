@@ -1,17 +1,27 @@
-pipeline{
-    agent any
+pipeline {
+    agent any 
+
+    environment {
+        APP_NAME = "hari-app"
+    }
     stages{
-        stage ('build'){
-            steps{
-                echo "build  hello world"
-            }
+        stage('build')
+          steps{
+            sh 'mvn package'
+              echo "building_${APP_NAME}"
         }
-        stage ('test'){
-            steps{
-                echo "test is done harish"
-            }
+
+        stage ('test')
+          steps {
+            sh 'mv test'
         }
+
+        stage ('deploy')
+          steps {
+            echo 'deploying the application'
+          }
+
+
     }
 
-    
 }
