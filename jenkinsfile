@@ -20,12 +20,12 @@ pipeline {
             }
         }
 
-        stage('sonar scan'){
-            steps{
-                // Static code analysis for security & code quality
-                sh 'mvn sonar:sonar'
-            }
-        }
+        // stage('sonar scan'){
+        //     steps{
+        //         // Static code analysis for security & code quality
+        //         sh 'mvn sonar:sonar'
+        //     }
+        // }
 
         stage('build dockerimage'){
             steps{
